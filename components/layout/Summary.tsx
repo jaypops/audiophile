@@ -5,11 +5,10 @@ import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 
 export default function Summary() {
-  const { cart } = useCart();
+  const { cart, grandTotal, shipping, vat, subtotal } = useCart();
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
   return (
-    <div className="space-y-8 border border-none pt-6 px-5 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.3)] h-[420px] w-[350px] overflow-y-auto">
+    <div className="space-y-8 border border-none pt-6 px-5 rounded-lg shadow-[0_0_10px_rgba(0,0,0,0.3)]  w-[350px] overflow-y-auto mt-6 h-fit">
       <h1 className="font-semibold text-xl">Order Summary</h1>
       {cart.map((item) => (
         <div key={item.id} className="flex items-center justify-between w-full">
@@ -33,17 +32,25 @@ export default function Summary() {
           </div>
         </div>
       ))}
-      <div className="flex items-center justify-between pt-4">
-        <h1 className="text-[#000000]/40 text-sm font-medium">TOTAL</h1>
-        <p className="text-xl font-bold text-[18px]">${total}</p>
-      </div>
       <div className="pb-4">
-        <Button
-          type="submit"
-          className="bg-[#D87D4A] hover:bg-[#FBAF85] text-white py-4 px-6 w-full rounded-lg text-xs cursor-pointer"
-        >
-          CONTINUE & PAY
-        </Button>
+        <div className="flex items-center justify-between pt-3">
+          <h1 className="text-[#000000]/40 text-sm ">TOTAL</h1>
+          <p className="text-xl font-semibold text-[18px]">${subtotal}</p>
+        </div>
+        <div className="flex items-center justify-between pt-3">
+          <h1 className="text-[#000000]/40 text-sm ">SHIPPING</h1>
+          <p className="text-xl font-semibold text-[18px]">${shipping}</p>
+        </div>
+        <div className="flex items-center justify-between pt-3">
+          <h1 className="text-[#000000]/40 text-sm ">VAT (INCLUDED)</h1>
+          <p className="text-xl font-semibold text-[18px]">${vat}</p>
+        </div>
+        <div className="flex items-center justify-between pt-6">
+          <h1 className="text-[#000000]/40 text-sm font-medium">GRAND TOTAL</h1>
+          <p className="text-xl font-bold text-[18px] text-[#D87D4A]">
+            ${grandTotal}
+          </p>
+        </div>
       </div>
     </div>
   );

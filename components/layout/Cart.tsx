@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,11 +10,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/CartContext";
 import { Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Cart() {
-  const { cart, clearAllCart, clearSingleItem } = useCart();
+  const { cart, clearAllCart, clearSingleItem, checkout,subtotal } = useCart();
+  const router = useRouter();
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const handleCheckout = () => {
+    try {
+      setIsProcessing(true);
+      const orderId = checkout(); 
+      router.push(`/checkout/order-confirmation/${orderId}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      alert(message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <div>
@@ -44,11 +58,12 @@ export default function Cart() {
               </h2>
             </div>
           </DropdownMenuLabel>
+
           {cart.length === 0 ? (
             <p className="text-center text-gray-500 py-4">Your cart is empty</p>
           ) : (
             cart.map((item) => (
-              <div key={item.id} onSelect={(e) => e.preventDefault()}>
+              <div key={item.id}>
                 <div className="flex items-center justify-between w-full space-y-3">
                   <div className="flex items-center space-x-3">
                     <Image
@@ -81,17 +96,22 @@ export default function Cart() {
             ))
           )}
 
-          <div className="flex items-center justify-between pt-4 px-2">
+          <div>
+            <div className="flex items-center justify-between pt-4 px-2">
             <h1 className="text-[#000000]/40 text-sm font-medium">TOTAL</h1>
-            <p className="text-xl font-bold text-[18px]">${total}</p>
+            <p className="text-xl font-bold text-[18px]">${subtotal}</p>
+          </div>
+       
           </div>
 
           <div className="px-4 pt-2">
-            <Link href="/checkout">
-              <Button className="bg-[#D87D4A] hover:bg-[#FBAF85] text-white py-4 px-6 w-full rounded-lg text-xs cursor-pointer">
-                CHECKOUT
-              </Button>
-            </Link>
+            <Button
+              onClick={handleCheckout}
+              disabled={isProcessing || cart.length === 0}
+              className="bg-[#D87D4A] hover:bg-[#FBAF85] text-white py-4 px-6 w-full rounded-lg text-xs cursor-pointer"
+            >
+              {isProcessing ? "Processing..." : "Place Order"}
+            </Button>
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
