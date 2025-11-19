@@ -12,20 +12,23 @@ import { useCart } from "@/context/CartContext";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Cart() {
-  const { cart, clearAllCart, clearSingleItem, checkout,subtotal } = useCart();
+  const { cart, clearAllCart, clearSingleItem, checkout, subtotal } = useCart();
+  const [Close, setClose] = useState<boolean>(false);
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleCheckout = () => {
     try {
       setIsProcessing(true);
-      const orderId = checkout(); 
+      const orderId = checkout();
       router.push(`/checkout/order-confirmation/${orderId}`);
+      setClose((prev) => !prev);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      alert(message);
+      toast.error(message);
     } finally {
       setIsProcessing(false);
     }
@@ -33,18 +36,20 @@ export default function Cart() {
 
   return (
     <div>
-      <DropdownMenu>
+      <DropdownMenu onOpenChange={setClose} open={Close}>
         <DropdownMenuTrigger>
           <Image
             src="/assets/carts.svg"
             alt="Cart"
             width={24}
             height={24}
-            className="cursor-pointer"
+            className={`
+              ${cart.length === 0 ? "pointer-events-none opacity-40" : "cursor-pointer"}
+            `}
           />
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="p-3 mt-8 w-[350px] mr-10">
+        <DropdownMenuContent className="p-3 mt-8 w-[300px] md:w-[350px] mr-3">
           <DropdownMenuLabel>
             <div className="flex items-center justify-between pb-3">
               <h1 className="font-semibold text-xl text-[17px]">
@@ -74,14 +79,14 @@ export default function Cart() {
                       className="rounded-sm"
                     />
                     <span className="flex flex-col space-y-1">
-                      <h1 className="font-semibold">{item.name}</h1>
-                      <p className="text-[#000000]/50 font-medium">
+                      <h1 className="font-semibold text-sm md:text-lg">{item.name}</h1>
+                      <p className="text-[#000000]/50 font-medium text-xs md:text-sm">
                         ${item.price}
                       </p>
                     </span>
                   </div>
                   <div className="flex flex-col space-y-2">
-                    <p className="text-sm text-[#D87D4A] font-medium text-center">
+                    <p className="md:text-sm text-[#D87D4A] font-medium text-center text-xs">
                       x{item.quantity}
                     </p>
                     <span>
@@ -98,13 +103,12 @@ export default function Cart() {
 
           <div>
             <div className="flex items-center justify-between pt-4 px-2">
-            <h1 className="text-[#000000]/40 text-sm font-medium">TOTAL</h1>
-            <p className="text-xl font-bold text-[18px]">${subtotal}</p>
-          </div>
-       
+              <h1 className="text-[#000000]/40 text-sm font-medium">TOTAL</h1>
+              <p className=" font-bold text-sm md:text-[18px]">${subtotal}</p>
+            </div>
           </div>
 
-          <div className="px-4 pt-2">
+          <div className="px-4 pt-4">
             <Button
               onClick={handleCheckout}
               disabled={isProcessing || cart.length === 0}

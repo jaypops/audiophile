@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { use } from "react";
 import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 export default function ProductPage({
   params,
@@ -56,7 +57,7 @@ export default function ProductPage({
       return updatedCart;
     });
 
-    alert(`${quantity}x ${newItem.name} has been added to the cart.`);
+    toast.success(`${quantity}x ${newItem.name} has been added to the cart.`);
     setQuantity(1); 
   };
 

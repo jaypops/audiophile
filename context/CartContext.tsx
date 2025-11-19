@@ -82,7 +82,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const shipping = 50;
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
   const vat = Math.round(subtotal * 0.2);
   const grandTotal = subtotal + shipping + vat;
 
@@ -113,7 +116,20 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ cart, setCart, updateQuantity, clearAllCart, clearSingleItem, checkout, orders, shipping, vat, grandTotal, subtotal, getOrderById }}
+      value={{
+        cart,
+        setCart,
+        updateQuantity,
+        clearAllCart,
+        clearSingleItem,
+        checkout,
+        orders,
+        shipping,
+        vat,
+        grandTotal,
+        subtotal,
+        getOrderById,
+      }}
     >
       {children}
     </CartContext.Provider>

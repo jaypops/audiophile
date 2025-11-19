@@ -10,12 +10,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { FormValues } from "./types";
+// import { useCheckoutForm } from "@/hooks/useCheckoutForm";
 
 interface ShippingSectionProps {
   control: Control<FormValues>;
+  isLoading: boolean;
 }
 
-export default function ShippingSection({ control }: ShippingSectionProps) {
+export default function ShippingSection({
+  control,
+  isLoading,
+}: ShippingSectionProps) {
+  // const { isLoading } = useCheckoutForm();
   return (
     <section>
       <h2 className="text-sm text-orange-500 font-bold mb-4">SHIPPING INFO</h2>
@@ -31,6 +37,7 @@ export default function ShippingSection({ control }: ShippingSectionProps) {
                   placeholder="1137 Williams Avenue"
                   {...field}
                   className="py-4"
+                  disabled={isLoading}
                 />
               </FormControl>
               <FormMessage />
@@ -44,7 +51,12 @@ export default function ShippingSection({ control }: ShippingSectionProps) {
             <FormItem>
               <FormLabel>ZIP Code</FormLabel>
               <FormControl>
-                <Input placeholder="10001" {...field} className="py-4" />
+                <Input
+                  placeholder="10001"
+                  {...field}
+                  className="py-4"
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -57,7 +69,12 @@ export default function ShippingSection({ control }: ShippingSectionProps) {
             <FormItem>
               <FormLabel>City</FormLabel>
               <FormControl>
-                <Input placeholder="New York" {...field} className="py-4" />
+                <Input
+                  placeholder="New York"
+                  {...field}
+                  className="py-4"
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,6 +91,7 @@ export default function ShippingSection({ control }: ShippingSectionProps) {
                   placeholder="United States"
                   {...field}
                   className="py-4"
+                  disabled={isLoading}
                 />
               </FormControl>
               <FormMessage />

@@ -2,20 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 interface CartItem {
-  id: string | number;
+  id: number;
   name: string;
-  image?: string | { mobile: string; tablet: string; desktop: string };
   price: number;
-  quantity?: number;
+  quantity: number;
+  image: {
+    desktop: string;
+    tablet: string;
+    mobile: string;
+  };
 }
 
 export default function AddCart({ product }: { product: CartItem }) {
   const { cart, setCart } = useCart();
 
   const handleAddToCart = () => {
-    // Get the current quantity from the cart context (not from product prop)
     const existingItem = cart.find((item) => item.id === product.id);
     const currentQuantity = existingItem?.quantity || 1;
 
@@ -34,22 +38,19 @@ export default function AddCart({ product }: { product: CartItem }) {
 
       let updatedCart;
       if (existingItemIndex > -1) {
-        // Item already in cart - this shouldn't happen with ProductButtons,
-        // but keeping as safety check
         updatedCart = [...prevCart];
         updatedCart[existingItemIndex] = {
           ...updatedCart[existingItemIndex],
           quantity: currentQuantity,
         };
       } else {
-        // Add new item
         updatedCart = [...prevCart, newItem];
       }
 
       return updatedCart;
     });
 
-    alert(`${newItem.name} has been added to the cart.`);
+    toast.success(`${newItem.name} has been added to the cart.`);
   };
 
   return (

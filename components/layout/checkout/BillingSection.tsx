@@ -13,9 +13,13 @@ import { FormValues } from "./types";
 
 interface BillingSectionProps {
   control: Control<FormValues>;
+  isLoading: boolean;
 }
 
-export default function BillingSection({ control }: BillingSectionProps) {
+export default function BillingSection({
+  control,
+  isLoading,
+}: BillingSectionProps) {
   return (
     <section>
       <h2 className="text-sm text-orange-500 font-bold mb-4">
@@ -29,7 +33,12 @@ export default function BillingSection({ control }: BillingSectionProps) {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Alexei Ward" {...field} className="py-4" />
+                <Input
+                  placeholder="Alexei Ward"
+                  {...field}
+                  className="py-4"
+                  disabled={isLoading}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -46,6 +55,7 @@ export default function BillingSection({ control }: BillingSectionProps) {
                   placeholder="alexei@mail.com"
                   {...field}
                   className="py-4"
+                  disabled={isLoading}
                 />
               </FormControl>
               <FormMessage />
@@ -63,6 +73,7 @@ export default function BillingSection({ control }: BillingSectionProps) {
                   placeholder="+1 202-555-0136"
                   {...field}
                   className="py-4"
+                  disabled={isLoading}
                 />
               </FormControl>
               <FormMessage />

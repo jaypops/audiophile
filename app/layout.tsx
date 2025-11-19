@@ -5,6 +5,7 @@ import ClientShell from "./ClientShell";
 import NextTopLoader from "nextjs-toploader";
 import { CartProvider } from "../context/CartContext";
 import { ConvexClientProvider } from "./ConvexClientProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -26,7 +27,10 @@ export default function RootLayout({
       <body className={`${manrope.variable} font-sans antialiased`}>
         <NextTopLoader color="#D87D4A" height={4} showSpinner={false} />
         <CartProvider>
-          <ClientShell>  <ConvexClientProvider>{children}</ConvexClientProvider></ClientShell>
+          <ClientShell>
+            <Toaster />
+            <ConvexClientProvider>{children}</ConvexClientProvider>
+          </ClientShell>
         </CartProvider>
       </body>
     </html>

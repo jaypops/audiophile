@@ -9,10 +9,12 @@ import {
   defaultFormValues,
   FormValues,
 } from "@/components/layout/checkout/types";
+import { toast } from "sonner";
 
 export function useCheckoutForm() {
   const [open, setOpen] = useState(false);
-  const { cart, subtotal, vat, grandTotal, shipping } = useCart();
+  const [isLoading, setIsLoading] = useState(false);
+  const { cart, subtotal, vat, grandTotal, shipping, } = useCart();
   const createForm = useMutation(api.form.createOrder);
 
   const form = useForm<FormValues>({
@@ -21,6 +23,7 @@ export function useCheckoutForm() {
   });
 
   const submitFormData = async (values: FormValues) => {
+    setIsLoading(true);
     try {
       const cartItems = cart.map((item) => ({
         id: item.id,
@@ -34,10 +37,10 @@ export function useCheckoutForm() {
         },
       }));
 
-      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
+      const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
       const orderDate = new Date().toISOString();
 
+      // Create order in database
       await createForm({
         ...values,
         cartItems,
@@ -50,16 +53,33 @@ export function useCheckoutForm() {
         status: "pending",
       });
 
-      await fetch("/api/emails", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
-      });
+      // Send verification email (non-blocking)
+      try {
+        const response = await fetch("/api/emails", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId }),
+        });
 
+        if (!response.ok) {
+          console.error("Failed to send verification email");
+          toast.warning("Order created but verification email failed to send");
+        }
+      } catch (emailError) {
+        console.error("Email sending error:", emailError);
+        toast.warning("Order created but verification email failed to send");
+      }
+
+      // Success actions
       setOpen(true);
+      toast.success("Order created successfully!");
+      form.reset();
+      
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Something went wrong!");
+      toast.error("Failed to create order. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -71,6 +91,7 @@ export function useCheckoutForm() {
   };
 
   return {
+    isLoading,
     form,
     open,
     setOpen,

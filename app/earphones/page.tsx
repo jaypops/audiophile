@@ -17,7 +17,7 @@ export default function Earphones() {
               NEW PROJECT
             </p>
             <h1 className="text-[#000000]/90 text-[50px] font-semibold max-w-sm text-sm/14">
-              ZX9 SPEAKERS
+              YX1 EARPHONES
             </h1>
             <p className="text-[#000000]/50 text-sm max-w-[29rem] mt-4 mb-8 text-sm/6">
               Tailor your listening experience with bespoke dynamic drivers from

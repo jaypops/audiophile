@@ -15,11 +15,13 @@ import { FormValues } from "./types";
 interface PaymentSectionProps {
   control: Control<FormValues>;
   paymentMethod: "e-Money" | "Cash on Delivery";
+  isLoading: boolean;
 }
 
 export default function PaymentSection({
   control,
   paymentMethod,
+  isLoading,
 }: PaymentSectionProps) {
   return (
     <section>
@@ -37,17 +39,21 @@ export default function PaymentSection({
               <RadioGroup
                 onValueChange={field.onChange}
                 value={field.value}
+                disabled={isLoading}
                 className="grid md:grid-cols-2 gap-2"
               >
                 <FormItem className="flex items-center space-x-2 border p-3 rounded-md">
                   <FormControl>
-                    <RadioGroupItem value="e-Money" />
+                    <RadioGroupItem value="e-Money" disabled={isLoading} />
                   </FormControl>
                   <FormLabel className="m-0">e-Money</FormLabel>
                 </FormItem>
                 <FormItem className="flex items-center space-x-2 border p-3 rounded-md">
                   <FormControl>
-                    <RadioGroupItem value="Cash on Delivery" />
+                    <RadioGroupItem
+                      value="Cash on Delivery"
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormLabel className="m-0">Cash on Delivery</FormLabel>
                 </FormItem>
@@ -67,7 +73,12 @@ export default function PaymentSection({
               <FormItem>
                 <FormLabel>e-Money Number</FormLabel>
                 <FormControl>
-                  <Input placeholder="238521993" {...field} className="py-4" />
+                  <Input
+                    placeholder="238521993"
+                    {...field}
+                    className="py-4"
+                    disabled={isLoading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -80,7 +91,12 @@ export default function PaymentSection({
               <FormItem>
                 <FormLabel>e-Money PIN</FormLabel>
                 <FormControl>
-                  <Input placeholder="6891" {...field} className="py-4" />
+                  <Input
+                    placeholder="6891"
+                    {...field}
+                    className="py-4"
+                    disabled={isLoading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
