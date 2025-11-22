@@ -34,7 +34,7 @@ export default function DesktopOnlyPage() {
             <div>
               <h3 className="text-white font-semibold mb-2">Mobile Device Detected</h3>
               <p className="text-orange-100 text-sm leading-relaxed">
-                We've detected that you're using a mobile device. For the best experience 
+                We&#39;ve detected that you&#39;re using a mobile device. For the best experience 
                 and full functionality, please access this website from a desktop or laptop.
               </p>
             </div>

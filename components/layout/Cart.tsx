@@ -10,17 +10,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/context/CartContext";
 import { Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function Cart() {
   const { cart, clearAllCart, clearSingleItem, checkout, subtotal } = useCart();
-  const [Close, setClose] = useState<boolean>(false);
+  const [Close, setClose] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const isDisabledPage = pathname.startsWith("/checkout/order-confirmation");
+
   const handleCheckout = () => {
+    if (isDisabledPage) return;
+
     try {
       setIsProcessing(true);
       const orderId = checkout();
@@ -56,8 +61,11 @@ export default function Cart() {
                 CART ({cart.length})
               </h1>
               <h2
-                className="cursor-pointer hover:underline text-[#000000]/50"
-                onClick={clearAllCart}
+                className={`
+                  text-[#000000]/50
+                  ${isDisabledPage ? "opacity-40 pointer-events-none" : "cursor-pointer hover:underline"}
+                `}
+                onClick={!isDisabledPage ? clearAllCart : undefined}
               >
                 Remove all
               </h2>
@@ -79,7 +87,9 @@ export default function Cart() {
                       className="rounded-sm"
                     />
                     <span className="flex flex-col space-y-1">
-                      <h1 className="font-semibold text-sm md:text-lg">{item.name}</h1>
+                      <h1 className="font-semibold text-sm md:text-lg">
+                        {item.name}
+                      </h1>
                       <p className="text-[#000000]/50 font-medium text-xs md:text-sm">
                         ${item.price}
                       </p>
@@ -89,30 +99,34 @@ export default function Cart() {
                     <p className="md:text-sm text-[#D87D4A] font-medium text-center text-xs">
                       x{item.quantity}
                     </p>
-                    <span>
-                      <Trash
-                        className="cursor-pointer hover:text-red-500 size-4"
-                        onClick={() => clearSingleItem(item.id)}
-                      />
-                    </span>
+
+                    <Trash
+                      className={`
+                        size-4
+                        ${isDisabledPage ? "opacity-40 pointer-events-none" : "cursor-pointer hover:text-red-500"}
+                      `}
+                      onClick={
+                        !isDisabledPage
+                          ? () => clearSingleItem(item.id)
+                          : undefined
+                      }
+                    />
                   </div>
                 </div>
               </div>
             ))
           )}
 
-          <div>
-            <div className="flex items-center justify-between pt-4 px-2">
-              <h1 className="text-[#000000]/40 text-sm font-medium">TOTAL</h1>
-              <p className=" font-bold text-sm md:text-[18px]">${subtotal}</p>
-            </div>
+          <div className="flex items-center justify-between pt-4 px-2">
+            <h1 className="text-[#000000]/40 text-sm font-medium">TOTAL</h1>
+            <p className=" font-bold text-sm md:text-[18px]">${subtotal}</p>
           </div>
 
           <div className="px-4 pt-4">
             <Button
               onClick={handleCheckout}
-              disabled={isProcessing || cart.length === 0}
-              className="bg-[#D87D4A] hover:bg-[#FBAF85] text-white py-4 px-6 w-full rounded-lg text-xs cursor-pointer"
+              disabled={isProcessing || cart.length === 0 || isDisabledPage}
+              className="bg-[#D87D4A] hover:bg-[#FBAF85] text-white py-4 px-6 w-full rounded-lg text-xs"
             >
               {isProcessing ? "Processing..." : "Place Order"}
             </Button>
